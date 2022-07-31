@@ -23,6 +23,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.logout.setOnClickListener { signOut() }
         client = LoginUtils.getClient(this)
+
+        //********
+        startActivity(Intent(this, ProfileActivity::class.java))
+
     }
 
     override fun onStart() {
