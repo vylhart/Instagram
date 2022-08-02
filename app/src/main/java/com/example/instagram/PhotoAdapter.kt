@@ -1,14 +1,21 @@
 package com.example.instagram
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.squareup.picasso.Picasso
 
-class PhotoAdapter(var context: FragmentActivity?, var dataList: List<ItemModel>):
+class PhotoAdapter(var context: Context):
 RecyclerView.Adapter<PhotoAdapter.ViewHolder>(){
+    private lateinit var dataList: List<ItemModel>
+
+    fun setData(dataList: List<ItemModel >){
+        this.dataList = dataList
+    }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var image: ImageView
@@ -18,12 +25,14 @@ RecyclerView.Adapter<PhotoAdapter.ViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.grid_item,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.grid_item,parent,false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.image.setImageResource(this.dataList[position].image)
+        Glide.with(context)
+            .load(dataList[position].image)
+            .into(holder.image)
     }
 
     override fun getItemCount(): Int {
