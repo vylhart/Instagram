@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.instagram.databinding.FragmentHomeBinding
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 
 class HomeFragment : Fragment() {
 
@@ -38,6 +40,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun createList() {
+
+
         dataList.add(ItemModel("Title", "Desc", R.drawable.user))
         dataList.add(ItemModel("Title", "Desc", R.drawable.user))
         dataList.add(ItemModel("Title", "Desc", R.drawable.user))
