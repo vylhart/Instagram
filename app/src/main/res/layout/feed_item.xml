@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
+    <ImageView
+        android:id="@+id/feed_image"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="1dp"
+            android:src="@drawable/heart"/>
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="1dp"
+            android:src="@drawable/comment"/>
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="1dp"
+            android:src="@drawable/send_icon"/>
+    </LinearLayout>
+    <TextView
+        android:text="100 Likes"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"/>
+    <TextView
+        android:textStyle="bold"
+        android:padding="5dp"
+        android:paddingLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="adfsafdasdasdasdsad"/>
+
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
