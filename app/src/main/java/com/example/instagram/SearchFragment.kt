@@ -14,9 +14,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.instagram.databinding.FragmentSearchBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.IOException
 import java.util.*
+import kotlin.math.log
 
 class SearchFragment : Fragment() {
     private val TAG = Utils.TAG + "SearchFragment"
@@ -24,6 +28,7 @@ class SearchFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: SearchViewModel
     private lateinit var binding: FragmentSearchBinding
+    private lateinit var user: FirebaseUser
 
 
     companion object {
@@ -41,8 +46,8 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
-        var user = auth.currentUser?.uid
-        binding.userId.text = user
+        user = auth.currentUser!!
+        binding.userId.text = user.uid
         binding.uploadBtn.setOnClickListener { uploadImage() }
         binding.selectBtn.setOnClickListener { selectImage() }
     }
@@ -55,20 +60,27 @@ class SearchFragment : Fragment() {
     }
 
     private fun uploadImage() {
-        if(filePath != null){
-            var pg = ProgressDialog(activity)
-            pg.setTitle("Uploading....")
-            pg.show()
-            val storageRef = FirebaseStorage.getInstance().reference.child("posts/${UUID.randomUUID()}")
-            var task = storageRef.putFile(filePath)
-            task.addOnFailureListener {
-                Log.d(TAG, "onViewCreated: failed")
-            }.addOnSuccessListener {
-                Log.d(TAG, "onViewCreated: passed")
-                pg.dismiss()
-            }
-
+        var pg = ProgressDialog(activity)
+        pg.setTitle("Uploading....")
+        pg.show()
+        var uid = UUID.randomUUID()
+        val storageRef = FirebaseStorage.getInstance().reference.child("posts/${user.uid}")
+        val dbRef  = Firebase.database.reference.child("users").child(user.uid).child("photo")
+        dbRef.setValue(uid.toString()).addOnFailureListener {
+            Log.d(TAG, "uploadImage: failed")
+            it.printStackTrace()
+        }.addOnSuccessListener {
+            Log.d(TAG, "uploadImage: value pushed")
         }
+        var task = storageRef.putFile(filePath)
+        task.addOnFailureListener {
+            Log.d(TAG, "onViewCreated: failed")
+        }.addOnSuccessListener {
+
+            Log.d(TAG, "onViewCreated: passed")
+            pg.dismiss()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

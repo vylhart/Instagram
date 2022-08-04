@@ -21,13 +21,17 @@ class PhotoAdapter(var context: Context, private var dataList: List<ItemModel>):
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d(TAG, "onCreateViewHolder: ")
         val view = LayoutInflater.from(context).inflate(R.layout.grid_item,parent,false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Picasso.get().load(dataList[position].image).placeholder(R.drawable.user).into(holder.image)
+        Picasso.get()
+            .load(dataList[position].image)
+            .centerCrop()
+            .fit()
+            .placeholder(R.drawable.user)
+            .into(holder.image)
     }
 
     override fun getItemCount(): Int {

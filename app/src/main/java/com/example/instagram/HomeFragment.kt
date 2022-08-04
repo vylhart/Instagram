@@ -8,8 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.example.instagram.databinding.FragmentHomeBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 
 class HomeFragment : Fragment() {
     private val TAG = Utils.TAG + "HomeFragment"
@@ -31,11 +36,25 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         createList()
         binding.recyclerView.apply {
-            layoutManager = GridLayoutManager(activity,2)
+            layoutManager = GridLayoutManager(activity,3)
             photoAdapter = PhotoAdapter(context,dataList)
             adapter = photoAdapter
         }
+        getUserDetails()
+    }
 
+    private fun getUserDetails(){
+        var auth = Firebase.auth
+        var user = auth.currentUser?.uid
+        var task = FirebaseStorage.getInstance().reference.child("posts").child(user.toString()).downloadUrl
+        task.addOnSuccessListener {
+            activity?.let { ctx -> Glide.with(ctx).load(it).optionalCircleCrop().into(binding.imageView) }
+            //Picasso.get().load(it).into(binding.imageView)
+            Log.d(TAG, "getUserDetails: passed")
+        }.addOnFailureListener {
+            Log.d(TAG, "getUserDetails: failed")
+            it.printStackTrace()
+        }
     }
 
     private fun createList() {
