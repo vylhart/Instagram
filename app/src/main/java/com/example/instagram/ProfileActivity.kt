@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class ProfileActivity : AppCompatActivity() {
-    private val TAG = "ProfileActivity"
+    private val TAG = Utils.TAG + "ProfileActivity"
     private lateinit var binding: ActivityProfileBinding
     private lateinit var auth: FirebaseAuth
 

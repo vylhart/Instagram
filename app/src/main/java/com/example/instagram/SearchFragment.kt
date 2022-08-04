@@ -1,11 +1,8 @@
 package com.example.instagram
 
-import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -16,21 +13,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.instagram.databinding.FragmentSearchBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.IOException
 import java.util.*
 
 class SearchFragment : Fragment() {
-    private val TAG = "SearchFragment"
+    private val TAG = Utils.TAG + "SearchFragment"
     private lateinit var filePath: Uri
+    private lateinit var auth: FirebaseAuth
+    private lateinit var viewModel: SearchViewModel
+    private lateinit var binding: FragmentSearchBinding
+
+
     companion object {
         fun newInstance() = SearchFragment()
     }
-
-    private lateinit var viewModel: SearchViewModel
-    private lateinit var binding: FragmentSearchBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +40,9 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        var user = auth.currentUser?.uid
+        binding.userId.text = user
         binding.uploadBtn.setOnClickListener { uploadImage() }
         binding.selectBtn.setOnClickListener { selectImage() }
     }

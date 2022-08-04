@@ -13,7 +13,8 @@ class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle)
         return when (position) {
             0 -> FeedFragment.newInstance()
             1 -> SearchFragment.newInstance()
-            else -> HomeFragment.newInstance()
+            2 -> HomeFragment.newInstance()
+            else -> FeedFragment.newInstance()
         }
     }
 }

@@ -11,7 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainActivity"
+    private val TAG = Utils.TAG +  "MainActivity"
     private lateinit var binding: ActivityMainBinding
     private var client: GoogleSignInClient? = null
 
@@ -23,10 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.logout.setOnClickListener { signOut() }
         client = LoginUtils.getClient(this)
-
-        //********
         startActivity(Intent(this, ProfileActivity::class.java))
-
     }
 
     override fun onStart() {
