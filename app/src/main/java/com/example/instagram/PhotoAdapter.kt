@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso
 import kotlin.math.log
 
 class PhotoAdapter(var context: Context, private var dataList: List<ItemModel>): RecyclerView.Adapter<PhotoAdapter.ViewHolder>(){
-    private val TAG = Utils.TAG+ "PhotoAdapter"
+    private val TAG = Utils.TAG + "PhotoAdapter"
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         var image: ImageView
         init {
@@ -30,7 +30,6 @@ class PhotoAdapter(var context: Context, private var dataList: List<ItemModel>):
             .load(dataList[position].image)
             .centerCrop()
             .fit()
-            .placeholder(R.drawable.user)
             .into(holder.image)
     }
 
