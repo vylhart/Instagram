@@ -9,6 +9,7 @@ class LoginUtils {
     companion object{
         fun getClient(context: Context): GoogleSignInClient? {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(R.string.web_client_id))
                 .requestEmail().build()
             return GoogleSignIn.getClient(context, gso)
         }

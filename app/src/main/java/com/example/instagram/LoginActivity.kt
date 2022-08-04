@@ -11,6 +11,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginActivity : AppCompatActivity() {
     private val TAG = "LoginActivity"
@@ -18,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private var client: GoogleSignInClient? = null
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +33,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if(account!=null){
+        auth = FirebaseAuth.getInstance()
+        var user = auth.currentUser
+        if(user!=null){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -40,22 +44,32 @@ class LoginActivity : AppCompatActivity() {
     private fun signIn(){
         Log.d(TAG, "signIn: ")
         val intent = client?.signInIntent
-        // null intent
         startActivityForResult(intent, SIGN_IN)
     }
 
+    
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(TAG, "onActivityResult: ")
         if(requestCode==SIGN_IN){
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try{
-                task.getResult(ApiException::class.java)
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }
-            catch (e: ApiException){
-                e.printStackTrace()
+            if(task.isSuccessful){
+                try{
+                    var account = task.getResult(ApiException::class.java)
+                    if(account!=null){
+                        var authCred  =GoogleAuthProvider.getCredential(account.idToken,null)
+                        auth.signInWithCredential(authCred)
+                            .addOnSuccessListener {
+                                val intent = Intent(this, MainActivity::class.java)
+                                startActivity(intent)
+                            }.addOnFailureListener {
+                                Log.d(TAG, "onActivityResult: failed")
+                            }
+                        }
+                    }
+                catch (e: ApiException){
+                    e.printStackTrace()
+                }
             }
         }
     }

@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
 
-class PhotoAdapter(var context: Context):
-RecyclerView.Adapter<PhotoAdapter.ViewHolder>(){
+class PhotoAdapter(var context: Context): RecyclerView.Adapter<PhotoAdapter.ViewHolder>(){
     private lateinit var dataList: List<ItemModel>
 
     fun setData(dataList: List<ItemModel >){

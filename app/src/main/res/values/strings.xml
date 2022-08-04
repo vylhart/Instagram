@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Instagram</string>
-    <string name="web_client_id">AIzaSyDeZ7l7SfEsdKCtHuZwaZBDedetMLLLneg</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="web_client_id">782368317426-fm3mkbj2plp788vkq3facbvng1m10u0r.apps.googleusercontent.com</string>
+    <string name="oauth_client_id">782368317426-5179p786tf7qc5g25glncm26n7t50e3f.apps.googleusercontent.com</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
