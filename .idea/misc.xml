@@ -3,7 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/drawable/user.xml" value="0.2745" />
         <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/layout/activity_login.xml" value="0.1762917933130699" />
+        <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/layout/fragment_home.xml" value="0.264" />
+        <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/layout/fragment_profile.xml" value="0.176" />
+        <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/layout/item_grid_post.xml" value="0.1796875" />
+        <entry key="..\:/Users/shash/StudioProjects/Instagram/app/src/main/res/menu/nav_menu.xml" value="0.3625" />
       </map>
     </option>
   </component>

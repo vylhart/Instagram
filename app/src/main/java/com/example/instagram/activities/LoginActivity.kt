@@ -19,6 +19,10 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -81,13 +85,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
         Log.d(TAG, "updateUI: ")
-        binding.progressBar.visibility = View.INVISIBLE
-        firebaseUser?.let {
-            val userDao = UserDao()
-            userDao.addUser(firebaseUser)
-            Toast.makeText(this, "Signed In", Toast.LENGTH_SHORT).show()
+        GlobalScope.launch(Dispatchers.IO){
+            firebaseUser?.let {
+                val userDao = UserDao.UserSingleton.INSTANCE
+                userDao.addUser(firebaseUser)
+            }
+            withContext(Dispatchers.Main){
+                binding.progressBar.visibility = View.INVISIBLE
+                Toast.makeText(applicationContext, "Signed In", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(application, MainActivity::class.java))
+                finish()
+            }
         }
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
     }
 }

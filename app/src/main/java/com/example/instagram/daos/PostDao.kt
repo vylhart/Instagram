@@ -7,22 +7,29 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 class PostDao {
-    val db = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
     val postCollection = db.collection("posts")
     val auth = FirebaseAuth.getInstance()
-    val userDao by lazy { UserDao() }
+    private val userDao by lazy { UserDao.UserSingleton.INSTANCE }
 
-    fun addPost(text: String){
+    object PostSingleton{
+        val INSTANCE = PostDao()
+    }
+
+    fun addPost(text: String, imageUrl: String){
         val user = userDao.currentUser
         val currentTime = System.currentTimeMillis()
         val postId = UUID.randomUUID().toString()
-        val post = Post(text, user.uid, currentTime, postId)
+        val post = Post(text, user.uid, currentTime, postId, imageUrl)
 
         GlobalScope.launch(Dispatchers.IO){
             postCollection.document(postId).set(post)
+            user.posts.add(postId)
+            userDao.userCollection.document(user.uid).set(user)
         }
         notifyPost(postId)
     }
@@ -37,6 +44,10 @@ class PostDao {
                 }
             }
         }
+    }
+
+    suspend fun getPost(postId: String): Post? {
+        return postCollection.document(postId).get().await().toObject(Post::class.java)
     }
 
 
