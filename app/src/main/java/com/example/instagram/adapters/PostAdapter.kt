@@ -15,14 +15,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PostAdapter(options: FirestoreRecyclerOptions<Post>) : FirestoreRecyclerAdapter<Post, PostCardViewHolder>(
-    options
-) {
+class PostAdapter(options: FirestoreRecyclerOptions<Post>) : FirestoreRecyclerAdapter<Post, PostCardViewHolder>(options) {
     private lateinit var binding: ItemPostBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostCardViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        binding = ItemPostBinding.inflate(inflater, parent, false)
+        binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostCardViewHolder(binding)
     }
 
@@ -34,11 +31,11 @@ class PostAdapter(options: FirestoreRecyclerOptions<Post>) : FirestoreRecyclerAd
 class PostCardViewHolder(private val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bindTo(post: Post) {
         with(binding){
+            postTextView.text = post.text
             Glide.with(postImage.context)
                 .load(post.imageURL)
                 .into(postImage)
 
-            postTextView.text = post.text
             GlobalScope.launch(Dispatchers.IO){
                 val user = UserDao.UserSingleton.INSTANCE.getUser(post.createdBy)
                 withContext(Dispatchers.Main){

@@ -32,11 +32,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         userDao = UserDao.UserSingleton.INSTANCE
-        val user = userDao.currentUser
-        val collection = userDao.userCollection.document(user.uid).collection("timeline")
-        val query = collection.orderBy("createdAt", Query.Direction.DESCENDING)
-        val options = FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
+        val options = userDao.getOptions("timeline")
         adapter = PostAdapter(options)
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = LinearLayoutManager(activity)

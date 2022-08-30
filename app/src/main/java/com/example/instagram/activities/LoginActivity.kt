@@ -1,5 +1,6 @@
 package com.example.instagram.activities
 
+import android.app.Activity
 import com.example.instagram.Utils.Companion.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.instagram.R
 import com.example.instagram.daos.UserDao
 import com.example.instagram.databinding.ActivityLoginBinding
@@ -45,18 +47,17 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
     }
 
+    private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if(it.resultCode == Activity.RESULT_OK){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            handleSignInResult(task)
+        }
+    }
+
     private fun signIn() {
         Log.d(TAG, "signIn: ")
         val signInIntent =  client.signInIntent
-        startActivityForResult(signInIntent, 101)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode==101){
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
+        getResult.launch(signInIntent)
     }
 
     private fun handleSignInResult(task: Task<GoogleSignInAccount>) {

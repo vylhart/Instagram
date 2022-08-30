@@ -10,11 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.instagram.adapters.GridAdapter
 import com.example.instagram.daos.UserDao
 import com.example.instagram.databinding.FragmentProfileBinding
-import com.example.instagram.models.Post
 import com.example.instagram.models.User
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.Query
-
 
 
 class ProfileFragment : Fragment() {
@@ -34,18 +30,12 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userDao = UserDao.UserSingleton.INSTANCE
-        user = userDao.currentUser
-        setupRecyclerView()
         setupView()
-
-        binding.fabBtn.setOnClickListener{
-            userDao.addPost("hello", "https://img.freepik.com/free-vector/cute-ninja-with-sword-cartoon-flat-cartoon-style_138676-2762.jpg?w=2000")
-        }
     }
 
     private fun setupView() {
-
+        userDao = UserDao.UserSingleton.INSTANCE
+        user = userDao.currentUser
         with(binding){
             Glide.with(imageView.context)
                 .load(user.imageUrl)
@@ -53,19 +43,19 @@ class ProfileFragment : Fragment() {
                 .into(imageView)
             followersCountView.text = user.followers.size.toString()
             followingsCountView.text = user.followings.size.toString()
-            postsCountView.text = user.posts.size.toString()
+            //postsCountView.text = user.posts.size.toString()
             userNameView.text = user.userName
+
+            val options = userDao.getOptions("posts")
+            adapter = GridAdapter(options)
+            recyclerview.adapter = adapter
+            recyclerview.layoutManager = GridLayoutManager(activity, 3)
         }
-    }
 
-
-    private fun setupRecyclerView() {
-        val collection = userDao.userCollection.document(user.uid).collection("posts")
-        val query = collection.orderBy("createdAt", Query.Direction.DESCENDING)
-        val options = FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
-        adapter = GridAdapter(options)
-        binding.recyclerview.adapter = adapter
-        binding.recyclerview.layoutManager = GridLayoutManager(activity, 3)
+        // TO REMOVE
+        binding.fabBtn.setOnClickListener{
+            userDao.addPost("hello", "https://img.freepik.com/free-vector/cute-ninja-with-sword-cartoon-flat-cartoon-style_138676-2762.jpg?w=2000")
+        }
     }
 
     override fun onStart() {

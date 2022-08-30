@@ -4,10 +4,10 @@ import android.util.Log
 import com.example.instagram.Utils.Companion.TAG
 import com.example.instagram.models.Post
 import com.example.instagram.models.User
-import com.google.firebase.auth.FirebaseAuth
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import java.util.*
 
 class UserDao {
     private val db = FirebaseFirestore.getInstance()
-    val userCollection = db.collection("users")
+    private val userCollection = db.collection("users")
     lateinit var currentUser: User
 
     object UserSingleton {
@@ -24,13 +24,13 @@ class UserDao {
     }
 
     suspend fun addUser(firebaseUser: FirebaseUser) {
+        Log.d(TAG, "addUser: ")
         var user = getUser(firebaseUser.uid)
         if(user==null){
             user = User(firebaseUser.uid, firebaseUser.displayName, firebaseUser.photoUrl.toString())
             userCollection.document(user.uid).set(user)
         }
         currentUser = user
-        Log.d(TAG, "addUser: ")
     }
 
     suspend fun getUser(userId: String): User? {
@@ -71,6 +71,12 @@ class UserDao {
                 }
             }
         }
+    }
+
+    fun getOptions(collectionName: String): FirestoreRecyclerOptions<Post> {
+        val collection = userCollection.document(currentUser.uid).collection(collectionName)
+        val query = collection.orderBy("createdAt", Query.Direction.DESCENDING)
+        return FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
     }
 
 }
