@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setNavigation()
     }
+
     private fun setNavigation() {
         val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
         binding.viewpager.adapter = adapter

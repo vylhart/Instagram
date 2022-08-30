@@ -8,16 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.example.instagram.R
 import com.example.instagram.Utils.Companion.TAG
 import com.example.instagram.adapters.GridAdapter
 import com.example.instagram.daos.PostDao
 import com.example.instagram.daos.UserDao
-import com.example.instagram.databinding.ActivityMainBinding
 import com.example.instagram.databinding.FragmentProfileBinding
-import com.example.instagram.models.Post
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

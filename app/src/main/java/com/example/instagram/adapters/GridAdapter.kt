@@ -10,7 +10,7 @@ import com.example.instagram.R
 import com.example.instagram.databinding.ItemGridPostBinding
 import com.example.instagram.models.Post
 
-class GridAdapter() : ListAdapter<Post, PostViewHolder>(DIFF_CALLBACK) {
+class GridAdapter : ListAdapter<Post, PostViewHolder>(DIFF_CALLBACK) {
     private lateinit var binding: ItemGridPostBinding
     private val list: ArrayList<Post> = ArrayList()
 
@@ -21,8 +21,7 @@ class GridAdapter() : ListAdapter<Post, PostViewHolder>(DIFF_CALLBACK) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        binding = ItemGridPostBinding.inflate(inflater, parent, false)
+        binding = ItemGridPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding)
     }
 

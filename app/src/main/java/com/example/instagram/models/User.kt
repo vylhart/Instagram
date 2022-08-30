@@ -7,5 +7,5 @@ data class User(val uid: String = "",
                 val posts: ArrayList<String> = ArrayList(),
                 val followers: ArrayList<String> = ArrayList(),
                 val followings: ArrayList<String> = ArrayList(),
-                val timeline: ArrayList<String> = ArrayList()
+                val timeline: HashMap<String, Post> = HashMap()
 )

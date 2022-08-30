@@ -12,8 +12,7 @@ import java.util.*
 
 class PostDao {
     private val db = FirebaseFirestore.getInstance()
-    val postCollection = db.collection("posts")
-    val auth = FirebaseAuth.getInstance()
+    private val postCollection = db.collection("posts")
     private val userDao by lazy { UserDao.UserSingleton.INSTANCE }
 
     object PostSingleton{
@@ -30,17 +29,17 @@ class PostDao {
             postCollection.document(postId).set(post)
             user.posts.add(postId)
             userDao.userCollection.document(user.uid).set(user)
+            userDao.userCollection.document(user.uid).collection("timeline").document(postId).set(post)
         }
-        notifyPost(postId)
+        notifyPost(post)
     }
 
-    private fun notifyPost(postId: String){
-        for(followerId in userDao.currentUser!!.followers){
+    private fun notifyPost(post: Post){
+        for(followerId in userDao.currentUser.followers){
             GlobalScope.launch(Dispatchers.IO){
                 val follower = userDao.getUser(followerId)
                 follower?.let {
-                    follower.timeline.add(postId)
-                    userDao.userCollection.document(followerId).set(follower)
+                    userDao.userCollection.document(followerId).collection("timeline").document(post.id).set(post)
                 }
             }
         }
