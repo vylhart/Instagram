@@ -11,17 +11,36 @@ import com.example.instagram.adapters.GridAdapter
 import com.example.instagram.daos.UserDao
 import com.example.instagram.databinding.FragmentProfileBinding
 import com.example.instagram.models.User
+import kotlinx.coroutines.*
 
+private const val UID_PARAM = "uid_params"
 
 class ProfileFragment : Fragment() {
     object ProfileSingleton {
         val INSTANCE = ProfileFragment()
     }
 
+    companion object {
+        fun newInstance(uid: String) =
+            ProfileFragment().apply {
+                arguments = Bundle().apply {
+                    putString(UID_PARAM, uid)
+                }
+            }
+    }
+
+    private var userID: String? = null
     private lateinit var binding: FragmentProfileBinding
     private lateinit var userDao: UserDao
     private lateinit var adapter: GridAdapter
     private lateinit var user: User
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            userID = it.getString(UID_PARAM)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentProfileBinding.inflate(inflater)
@@ -30,12 +49,15 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+            userDao = UserDao.UserSingleton.INSTANCE
+        if(userID==null)
+            user = userDao.currentUser
+        else
+            user = userDao.SearchedUser
         setupView()
     }
 
     private fun setupView() {
-        userDao = UserDao.UserSingleton.INSTANCE
-        user = userDao.currentUser
         with(binding){
             Glide.with(imageView.context)
                 .load(user.imageUrl)
@@ -43,10 +65,9 @@ class ProfileFragment : Fragment() {
                 .into(imageView)
             followersCountView.text = user.followers.size.toString()
             followingsCountView.text = user.followings.size.toString()
-            //postsCountView.text = user.posts.size.toString()
             userNameView.text = user.userName
 
-            val options = userDao.getOptions("posts")
+            val options = userDao.getOptions(user.uid, "posts")
             adapter = GridAdapter(options)
             recyclerview.adapter = adapter
             recyclerview.layoutManager = GridLayoutManager(activity, 3)
@@ -60,6 +81,7 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
         adapter.startListening()
     }
 
@@ -67,5 +89,7 @@ class ProfileFragment : Fragment() {
         super.onStop()
         adapter.stopListening()
     }
+
+
 
 }

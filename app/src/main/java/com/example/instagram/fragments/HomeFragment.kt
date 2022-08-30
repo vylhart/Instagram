@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         userDao = UserDao.UserSingleton.INSTANCE
-        val options = userDao.getOptions("timeline")
+        val options = userDao.getOptions(userDao.currentUser.uid,"timeline")
         adapter = PostAdapter(options)
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = LinearLayoutManager(activity)

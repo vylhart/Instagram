@@ -18,6 +18,7 @@ class UserDao {
     private val db = FirebaseFirestore.getInstance()
     private val userCollection = db.collection("users")
     lateinit var currentUser: User
+    lateinit var SearchedUser: User
 
     object UserSingleton {
         val INSTANCE = UserDao()
@@ -73,10 +74,18 @@ class UserDao {
         }
     }
 
-    fun getOptions(collectionName: String): FirestoreRecyclerOptions<Post> {
-        val collection = userCollection.document(currentUser.uid).collection(collectionName)
+    fun getOptions(userId: String,collectionName: String): FirestoreRecyclerOptions<Post> {
+        val collection = userCollection.document(userId).collection(collectionName)
         val query = collection.orderBy("createdAt", Query.Direction.DESCENDING)
         return FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
+    }
+
+    fun getUserOptions(text: String?): FirestoreRecyclerOptions<User> {
+        var query = userCollection.limit(20)
+        if(text!=null && text.isNotEmpty()){
+            query = userCollection.whereArrayContains("userName", text)
+        }
+        return FirestoreRecyclerOptions.Builder<User>().setQuery(query, User::class.java).build()
     }
 
 }

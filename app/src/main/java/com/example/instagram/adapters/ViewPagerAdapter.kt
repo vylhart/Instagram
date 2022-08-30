@@ -15,8 +15,8 @@ class ViewPagerAdapter(manager: FragmentManager, lifecycle: Lifecycle): Fragment
 
     override fun createFragment(position: Int): Fragment {
         return when(position){
-            0 -> HomeFragment.HomeSingleton.INSTANCE
-            1 -> SearchFragment.SearchSingleton.INSTANCE
+            0 -> SearchFragment.SearchSingleton.INSTANCE
+            1 -> HomeFragment.HomeSingleton.INSTANCE
             else -> ProfileFragment.ProfileSingleton.INSTANCE
         }
     }

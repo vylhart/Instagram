@@ -1,5 +1,6 @@
 package com.example.instagram.models
 
+
 data class User(val uid: String = "",
                 val userName: String? = "",
                 val imageUrl: String = "",
