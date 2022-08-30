@@ -9,23 +9,21 @@ import com.bumptech.glide.Glide
 import com.example.instagram.R
 import com.example.instagram.databinding.ItemGridPostBinding
 import com.example.instagram.models.Post
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 
-class GridAdapter : ListAdapter<Post, PostViewHolder>(DIFF_CALLBACK) {
+class GridAdapter(options: FirestoreRecyclerOptions<Post>) : FirestoreRecyclerAdapter<Post, PostViewHolder>(
+    options
+) {
     private lateinit var binding: ItemGridPostBinding
-    private val list: ArrayList<Post> = ArrayList()
-
-    fun addItem(post: Post){
-        list.add(post)
-        submitList(list)
-    }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         binding = ItemGridPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int, model: Post) {
         holder.bindTo(getItem(position))
     }
 }
@@ -39,7 +37,7 @@ class PostViewHolder(private val binding: ItemGridPostBinding) : RecyclerView.Vi
             .into(binding.itemImageVIew)
     }
 }
-
+/*
 private val DIFF_CALLBACK: DiffUtil.ItemCallback<Post> = object : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldData: Post, newData: Post): Boolean {
         return oldData.id == newData.id
@@ -49,3 +47,4 @@ private val DIFF_CALLBACK: DiffUtil.ItemCallback<Post> = object : DiffUtil.ItemC
         return oldData == newData
     }
 }
+*/

@@ -1,22 +1,20 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
-import com.example.instagram.Utils.Companion.TAG
 import com.example.instagram.adapters.GridAdapter
-import com.example.instagram.daos.PostDao
 import com.example.instagram.daos.UserDao
 import com.example.instagram.databinding.FragmentProfileBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.instagram.models.Post
+import com.example.instagram.models.User
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.Query
+
 
 
 class ProfileFragment : Fragment() {
@@ -26,8 +24,8 @@ class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
     private lateinit var userDao: UserDao
-    private lateinit var postDao: PostDao
     private lateinit var adapter: GridAdapter
+    private lateinit var user: User
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentProfileBinding.inflate(inflater)
@@ -37,18 +35,18 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userDao = UserDao.UserSingleton.INSTANCE
-        postDao = PostDao.PostSingleton.INSTANCE
+        user = userDao.currentUser
         setupRecyclerView()
         setupView()
 
         binding.fabBtn.setOnClickListener{
-            postDao.addPost("hello", "https://img.freepik.com/free-vector/cute-ninja-with-sword-cartoon-flat-cartoon-style_138676-2762.jpg?w=2000")
+            userDao.addPost("hello", "https://img.freepik.com/free-vector/cute-ninja-with-sword-cartoon-flat-cartoon-style_138676-2762.jpg?w=2000")
         }
     }
 
     private fun setupView() {
+
         with(binding){
-            val user = userDao.currentUser
             Glide.with(imageView.context)
                 .load(user.imageUrl)
                 .circleCrop()
@@ -62,19 +60,22 @@ class ProfileFragment : Fragment() {
 
 
     private fun setupRecyclerView() {
-        adapter = GridAdapter()
+        val collection = userDao.userCollection.document(user.uid).collection("posts")
+        val query = collection.orderBy("createdAt", Query.Direction.DESCENDING)
+        val options = FirestoreRecyclerOptions.Builder<Post>().setQuery(query, Post::class.java).build()
+        adapter = GridAdapter(options)
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = GridLayoutManager(activity, 3)
-        val postList = userDao.currentUser.posts
-        for(postId in postList){
-            GlobalScope.launch(Dispatchers.IO){
-                val post = postDao.getPost(postId)
-                withContext(Dispatchers.Main){
-                    Log.d(TAG, "setupRecyclerView: ")
-                    post?.let { adapter.addItem(it) }
-                }
-            }
-        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.instagram.daos
 
 import android.util.Log
 import com.example.instagram.Utils.Companion.TAG
+import com.example.instagram.models.Post
 import com.example.instagram.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -11,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
 class UserDao {
     private val db = FirebaseFirestore.getInstance()
@@ -47,4 +49,28 @@ class UserDao {
             }
         }
     }
+
+    fun addPost(text: String, imageUrl: String){
+        val currentTime = System.currentTimeMillis()
+        val postId = UUID.randomUUID().toString()
+        val post = Post(text, currentUser.uid, currentTime, postId, imageUrl)
+
+        GlobalScope.launch(Dispatchers.IO){
+            userCollection.document(currentUser.uid).collection("posts").document(postId).set(post)
+            userCollection.document(currentUser.uid).collection("timeline").document(postId).set(post)
+        }
+        notifyPost(post)
+    }
+
+    private fun notifyPost(post: Post){
+        for(followerId in currentUser.followers){
+            GlobalScope.launch(Dispatchers.IO){
+                val follower = getUser(followerId)
+                follower?.let {
+                    userCollection.document(followerId).collection("timeline").document(post.id).set(post)
+                }
+            }
+        }
+    }
+
 }
