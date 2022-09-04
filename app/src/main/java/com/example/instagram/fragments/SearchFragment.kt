@@ -41,7 +41,7 @@ class SearchFragment : Fragment() {
                 val query = UserDao.UserSingleton.INSTANCE.getUserOptions(newText)
                 adapter = SearchAdapter(query) { userID -> (activity as MainActivity).onUserClicked(userID) }
                 binding.recyclerview.adapter = adapter
-                binding.recyclerview.layoutManager = LinearLayoutManager(activity)
+                adapter.startListening()
                 return true
             }
         })

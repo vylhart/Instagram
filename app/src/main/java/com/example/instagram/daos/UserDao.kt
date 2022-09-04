@@ -81,9 +81,10 @@ class UserDao {
     }
 
     fun getUserOptions(text: String?): FirestoreRecyclerOptions<User> {
-        var query = userCollection.limit(20)
+        var query = userCollection.orderBy("userName")
         if(text!=null && text.isNotEmpty()){
-            query = userCollection.whereArrayContains("userName", text)
+            Log.d(TAG, "getUserOptions: "+text)
+            query = userCollection.whereGreaterThanOrEqualTo("userName",text.trim())
         }
         return FirestoreRecyclerOptions.Builder<User>().setQuery(query, User::class.java).build()
     }
