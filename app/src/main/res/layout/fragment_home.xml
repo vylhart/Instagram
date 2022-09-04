@@ -3,13 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".fragments.HomeFragment">
 
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="191dp"
-        android:layout_height="104dp"
-        android:text="Home" />
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_post"/>
 </FrameLayout>
