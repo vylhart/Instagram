@@ -1,12 +1,14 @@
 package com.example.instagram.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.example.instagram.Utils.Companion.TAG
 import com.example.instagram.adapters.GridAdapter
 import com.example.instagram.daos.UserDao
 import com.example.instagram.databinding.FragmentProfileBinding
@@ -50,10 +52,16 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
             userDao = UserDao.UserSingleton.INSTANCE
-        if(userID==null)
+        if(userID==null){
             user = userDao.currentUser
-        else
+            binding.followBtn.visibility = View.GONE
+            binding.messageBtn.visibility = View.GONE
+        }
+        else{
             user = userDao.SearchedUser
+            binding.editProfileBtn.visibility = View.GONE
+        }
+
         setupView()
     }
 
@@ -71,6 +79,8 @@ class ProfileFragment : Fragment() {
             adapter = GridAdapter(options)
             recyclerview.adapter = adapter
             recyclerview.layoutManager = GridLayoutManager(activity, 3)
+
+            followBtn.setOnClickListener { onFollowClicked() }
         }
 
         // TO REMOVE
@@ -79,9 +89,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun onFollowClicked() {
+        userDao.followUser(user.uid)
+        binding.followBtn.isEnabled = false
+        binding.followBtn.text = "Unfollow"
+    }
+
     override fun onStart() {
         super.onStart()
-
         adapter.startListening()
     }
 

@@ -40,11 +40,13 @@ class UserDao {
 
 
     fun followUser(userId: String){
+        Log.d(TAG, "followUser: $userId")
         GlobalScope.launch(Dispatchers.IO){
             val followee = getUser(userId)
             followee?.let {
-                followee.followers.add(currentUser.uid)
-                currentUser.followings.add(userId)
+                Log.i(TAG, "followUser: "+followee.userName)
+                followee.followers.put(currentUser.uid, currentUser)
+                currentUser.followings.put(userId, it)
                 userCollection.document(userId).set(followee)
                 userCollection.document(currentUser.uid).set(currentUser)
             }
@@ -64,14 +66,14 @@ class UserDao {
     }
 
     private fun notifyPost(post: Post){
-        for(followerId in currentUser.followers){
+        /*for(followerId in currentUser.followers){
             GlobalScope.launch(Dispatchers.IO){
                 val follower = getUser(followerId)
                 follower?.let {
-                    userCollection.document(followerId).collection("timeline").document(post.id).set(post)
+                    userCollection.document(followerId.toString()).collection("timeline").document(post.id).set(post)
                 }
             }
-        }
+        }*/
     }
 
     fun getOptions(userId: String,collectionName: String): FirestoreRecyclerOptions<Post> {
@@ -83,7 +85,7 @@ class UserDao {
     fun getUserOptions(text: String?): FirestoreRecyclerOptions<User> {
         var query = userCollection.orderBy("userName")
         if(text!=null && text.isNotEmpty()){
-            Log.d(TAG, "getUserOptions: "+text)
+            Log.d(TAG, "getUserOptions: $text")
             query = userCollection.whereGreaterThanOrEqualTo("userName",text.trim())
         }
         return FirestoreRecyclerOptions.Builder<User>().setQuery(query, User::class.java).build()

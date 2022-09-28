@@ -6,7 +6,7 @@ data class User(val uid: String = "",
                 val imageUrl: String = "",
                 val bio: String = "",
                 val posts: HashMap<String, Post> = HashMap(),
-                val followers: ArrayList<String> = ArrayList(),
-                val followings: ArrayList<String> = ArrayList(),
+                val followers: HashMap<String, User> = HashMap(),
+                val followings: HashMap<String, User> = HashMap(),
                 val timeline: HashMap<String, Post> = HashMap()
 )

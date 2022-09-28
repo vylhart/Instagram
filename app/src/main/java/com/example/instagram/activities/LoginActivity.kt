@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.example.instagram.R
 import com.example.instagram.daos.UserDao
 import com.example.instagram.databinding.ActivityLoginBinding
@@ -86,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(firebaseUser: FirebaseUser?) {
         Log.d(TAG, "updateUI: ")
-        GlobalScope.launch(Dispatchers.IO){
+        lifecycleScope.launch(Dispatchers.IO){
             firebaseUser?.let {
                 val userDao = UserDao.UserSingleton.INSTANCE
                 userDao.addUser(firebaseUser)

@@ -106,26 +106,46 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="Bio"
-            android:textSize="13dp"
+            android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userNameView" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/edit_profile_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:background="#49494C"
-            android:padding="0dp"
+            android:padding="10dp"
             android:text="Edit Profile"
-            android:textSize="13dp"
+            android:textSize="13sp"
+            android:layout_margin="10dp"
             app:layout_constraintBottom_toTopOf="@id/recyclerview"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/followBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Follow"
+            app:layout_constraintBottom_toTopOf="@id/recyclerview"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/messageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginEnd="10dp"
+            android:text="Message"
+            app:layout_constraintBottom_toTopOf="@id/recyclerview"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="350dp"
+            android:layout_marginTop="10dp"
             tools:listitem="@layout/item_grid_post"
             app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -136,6 +156,8 @@
             android:layout_margin="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

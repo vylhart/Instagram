@@ -1,7 +1,6 @@
 package com.example.instagram.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -35,7 +34,6 @@ class PostCardViewHolder(private val binding: ItemPostBinding) : RecyclerView.Vi
             Glide.with(postImage.context)
                 .load(post.imageURL)
                 .into(postImage)
-
             GlobalScope.launch(Dispatchers.IO){
                 val user = UserDao.UserSingleton.INSTANCE.getUser(post.createdBy)
                 withContext(Dispatchers.Main){
